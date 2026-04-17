@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Birthday Surprise</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+body {
+    margin: 0;
+    font-family: 'Lora', serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+body {
+    position: relative;
+    z-index: 1;
+}
+/* Curtains */
+.curtain {
+    position: fixed;
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to bottom, #d65de3, #b22222);
+    z-index: 1000;
+    transition: transform 2s ease-in-out;
+    pointer-events: none;
+}
+.left-curtain { left: 0; }
+.right-curtain { right: 0; }
+.open-left { transform: translateX(-100%); }
+.open-right { transform: translateX(100%); }
+/* Start Button */
+.start-screen {
+    position: relative;
+    z-index: 2000; /* ABOVE CURTAINS */
+}
+
+.start-screen button {
+    padding: 15px 30px;
+    font-size: 18px;
+    border: none;
+    border-radius: 30px;
+    background: #ff4e50;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+}
+
+/* Card */
+.card {
+    background: white;
+    width: 700px;        /* much wider */
+    max-width: 95%;      /* still responsive */
+    padding: 35px;
+    border-radius: 20px;
+    text-align: center;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    z-index: 10;
+}
+.hidden { display: none; }
+
+.photo {
+    width: 200px;
+    height: 200px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 15px;
+    border: 5px solid #fff;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+.cake { font-size: 50px; }
+
+.from { margin-top: 10px; font-weight: bold; color: #ff4e50; }
+
+/* Confetti */
+.confetti-container {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    top: 0;
+    left: 0;
+    z-index: 5;
+}
+
+.confetti {
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    animation: fall linear infinite;
+}
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 38px;
+    font-weight: 700;
+    color: #222;
+    margin-bottom: 8px;
+}
+
+.name {
+    font-family: 'Playfair Display', serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #444;
+    margin-bottom: 10px;
+}
+
+.message {
+    font-family: 'Lora', serif;
+    font-size: 15px;
+    color: #555;
+    margin-bottom: 15px;
+    line-height: 1.6;
+ font-style: italic; 
+}
+
+.cake {
+    font-size: 48px;
+    margin: 10px 0;
+}
+
+.from {
+    margin-top: 12px;
+    font-family: 'Lora', serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #d6336c;
+}
+.bg-image {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-image: url("filter.jpeg"); 
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    z-index: 0; /* changed from -1 */
+}
+
+@keyframes fall {
+    to { transform: translateY(100vh) rotate(360deg); }
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Lora:wght@400;500&display=swap" rel="stylesheet">
+</head>
+
+<body>
+<div class="bg-image"></div>
+
+<div class="curtain left-curtain" id="leftCurtain"></div>
+<div class="curtain right-curtain" id="rightCurtain"></div>
+
+<audio id="music" src="Magic-Show-BGM.mp3"></audio>
+
+<div class="start-screen" id="startScreen">
+    <button id="openBtn">Open Your Surprise 🎁</button>
+</div>
+
+<div class="card hidden" id="card">
+    <img src="nia1.jpeg" class="photo">
+   <h1 class="title">Happy Birthday 🎉</h1>
+   <h2 class="name">My Dearest Niharika(DT) 💖</h2>
+<p class="message">
+    Another year older, but still the same amazing, caring, and beautiful soul💖<br><br>
+    You’re truly one of the most special people in my life, someone who made my inter days so memorable and filled them with so much happiness 💫<br>
+    Those moments with you will always mean a lot to me 🥺<br><br>
+    May your day be filled with endless joy, love, and everything your heart wishes for 💕<br>
+    You deserve all the happiness in the world, today and always 🌸
+</p>
+<div class="cake">🎂✨</div>
+<p class="from">
+    With love 💌,<br>
+    Leisha 💫
+</p>
+</div>
+
+<div class="confetti-container" id="confetti"></div>
+
+<script>
+document.getElementById("openBtn").onclick = function () {
+    document.getElementById("leftCurtain").classList.add("open-left");
+    document.getElementById("rightCurtain").classList.add("open-right");
+
+    setTimeout(() => {
+        document.getElementById("startScreen").style.display = "none";
+        document.getElementById("card").classList.remove("hidden");
+
+        const music = document.getElementById("music");
+        if (music) music.play().catch(() => {});
+
+        startConfetti();
+    }, 2000);
+};
+
+function startConfetti() {
+    const container = document.getElementById("confetti");
+
+    for (let i = 0; i < 120; i++) {
+        let c = document.createElement("div");
+        c.classList.add("confetti");
+        c.style.left = Math.random() * 100 + "vw";
+        c.style.animationDuration = (Math.random() * 3 + 2) + "s";
+        c.style.backgroundColor = randomColor();
+        container.appendChild(c);
+    }
+}
+
+function randomColor() {
+    const colors = ["#ff4e50", "#fc913a", "#f9d423", "#e1f5c4", "#c4e3f3"];
+    return colors[Math.floor(Math.random() * colors.length)];
+}
+</script>
+
+</body>
+</html>
